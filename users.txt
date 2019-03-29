@@ -1,7 +1,2 @@
-0 0 0
-luke supergoodpass 3
-joe SECUREness 1
-newUseR password123 1
-
-reqppqoe password123 3
-Black password123 3
+luke|supergoodpass|3
+joe|SECUREness|1

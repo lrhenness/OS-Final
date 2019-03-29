@@ -8,10 +8,24 @@
 array=users.txt
 readarray -t users < $array
 
-printf "."
-sleep 0.5
 
-echo "."
+#---------------------------------------------------------------
+#-----------------------reload_array----------------------------
+#---------------------------------------------------------------
+reload_array ()
+{
+oIFS="$IFS"
+IFS=$'\n'
+for line in `cat $array`;
+do
+	IFS='|'
+	arr=($line)
+	echo "Username: ${arr[0]}"
+	echo "Password: ${arr[1]}"
+	echo "Role: ${arr[2]}"
+done
+IFS="$oIFS"
+}
 
 #---------------------------------------------------------------
 #-------------------------new_user------------------------------
@@ -23,7 +37,7 @@ while :
 do
 	printf 'Enter a username: '
 	read a
-	if grep -iwo "$a" $array
+	if grep -iwq '$a' $array
 	then
 		echo '------------------------------------------'
 		echo 'Username already taken. Please try again.'
@@ -68,8 +82,8 @@ done
 #echo 'Adding user...'
 
 # Adding user to the end of users.txt
-echo "$a $b $c" >> $array
-echo "$a was added to the list of users!"
+echo '$a $b $c' >> $array
+echo '$a was added to the list of users!'
 }
 
 #-------------------------------------------------------------------
@@ -81,12 +95,12 @@ while :
 do
 	printf 'Enter the user you want to modify: '
 	read x
-	if grep -iwo "$x" $array
+	if grep -iwq '$x' $array
 	then
-		echo "1: username"
-		echo "2: password"
-		echo "3: access level"
-		printf "Which would you like to modify about $x? "
+		echo '1: username'
+		echo '2: password'
+		echo '3: access level'
+		printf 'Which would you like to modify about $x? '
 		read y
 	else
 		echo '------------------------------------------'
@@ -99,7 +113,28 @@ do
 	echo '-----------'
 	break
 done
+reload_array
 }
+
+#-------------------------------------------------------------------
+#-----------------------------rm_user-------------------------------
+#-------------------------------------------------------------------
+#rm_user()
+#{
+#while :
+#do
+#	printf 'Which user would you like to remove? '
+#	read remove
+#	if grep -iwq '$remove' $array
+#	then
+#		#REMOVE USER
+#	else
+#		echo 'This user does not exist'
+#		continue
+#	fi
+#done
+reload_array
+#}
 
 
 #-------------------------------------------------------------------
@@ -109,11 +144,11 @@ landing_page ()
 {
 while :
 do
-	echo "1: add a new user"
-	echo "2: modify and existing user"
-	echo "3: remove a user"
-	echo "4: exit"
-	printf "Enter a number 1-4: "
+	echo '1: add a new user'
+	echo '2: modify and existing user'
+	echo '3: remove a user'
+	echo '4: exit'
+	printf 'Enter a number 1-4: '
 	read choice
 	case $choice in
 		1)
@@ -130,7 +165,7 @@ do
 			;;
 		*)
 			echo '------------------------------------------'
-			echo 	     "You did not enter 1-4"
+			echo '----------You did not enter 1-4-----------'
 			echo '------------------------------------------'
 			continue
 			;;
@@ -140,4 +175,5 @@ done
 }
 
 # Starting the script
-landing_page
+#landing_page
+reload_array
