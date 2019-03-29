@@ -9,16 +9,9 @@ array=users.txt
 readarray -t users < $array
 
 printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
-printf "."
+sleep 0.5
+
+echo "."
 
 #---------------------------------------------------------------
 #-------------------------new_user------------------------------
