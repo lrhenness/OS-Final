@@ -6,7 +6,7 @@
 # rm_user
 
 array=users.txt
-readarray -t users < $array
+#readarray -t users < $array
 
 
 #---------------------------------------------------------------
@@ -14,18 +14,35 @@ readarray -t users < $array
 #---------------------------------------------------------------
 reload_array ()
 {
+zero=0
+one=1
+two=2
+
 oIFS="$IFS"
 IFS=$'\n'
 for line in `cat $array`;
 do
 	IFS='|'
 	arr=($line)
-	echo "Username: ${arr[0]}"
-	echo "Password: ${arr[1]}"
-	echo "Role: ${arr[2]}"
+	users[$zero]=${arr[0]}
+	users[$one]=${arr[1]}
+	users[$two]=${arr[2]}
+#	echo "Username: ${arr[0]}"
+#	echo "Password: ${arr[1]}"
+#	echo "Role: ${arr[2]}"
+	((zero+=3))
+	((one+=3))
+	((two+=3))
 done
+printf '%s\n' "${users[@]}"
 IFS="$oIFS"
 }
+
+#---------------------------------------------------------------
+#-------------------------get_index-----------------------------
+#---------------------------------------------------------------
+
+
 
 #---------------------------------------------------------------
 #-------------------------new_user------------------------------
@@ -37,7 +54,7 @@ while :
 do
 	printf 'Enter a username: '
 	read a
-	if grep -iwq '$a' $array
+	if grep -iwq '$a' ${arr[@]}
 	then
 		echo '------------------------------------------'
 		echo 'Username already taken. Please try again.'
@@ -133,7 +150,7 @@ reload_array
 #		continue
 #	fi
 #done
-reload_array
+#reload_array
 #}
 
 

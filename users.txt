@@ -1,2 +1,3 @@
 luke|supergoodpass|3
 joe|SECUREness|1
+NEWname|PAASSSSwoooord|2
