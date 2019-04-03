@@ -41,8 +41,10 @@ IFS="$oIFS"
 #---------------------------------------------------------------
 #-------------------------get_index-----------------------------
 #---------------------------------------------------------------
-
-
+#get_index ()
+#{
+#
+#}
 
 #---------------------------------------------------------------
 #-------------------------new_user------------------------------
@@ -54,13 +56,23 @@ while :
 do
 	printf 'Enter a username: '
 	read a
-	if grep -iwq '$a' ${arr[@]}
-	then
-		echo '------------------------------------------'
-		echo 'Username already taken. Please try again.'
-		echo '------------------------------------------'
-		continue
-	fi
+	for str in "${users[@]}"; do
+		if [ "$str" = "$a" ]; then
+			echo $i
+			echo $str
+			return
+		else
+			((i++))
+		fi
+	done
+
+#	if grep -iwq '$a' ${users[@]}
+#	then
+#		echo '------------------------------------------'
+#		echo 'Username already taken. Please try again.'
+#		echo '------------------------------------------'
+#		continue
+#	fi
 	echo 'Thank you!'
 	sleep 0.5
 	echo '-----------'
@@ -92,11 +104,14 @@ do
 done
 
 # Just for show
-#echo 'Adding user.'
-#sleep 0.5
-#echo 'Adding user..'
-#sleep 0.5
-#echo 'Adding user...'
+printf 'Adding user'
+sleep 0.5
+printf '.'
+sleep 0.5
+printf '.'
+sleep 0.5
+printf '.'
+sleep 0.5
 
 # Adding user to the end of users.txt
 echo '$a $b $c' >> $array
@@ -112,7 +127,7 @@ while :
 do
 	printf 'Enter the user you want to modify: '
 	read x
-	if grep -iwq '$x' $array
+	if grep -iwq '$x' $users
 	then
 		echo '1: username'
 		echo '2: password'
@@ -192,5 +207,5 @@ done
 }
 
 # Starting the script
-#landing_page
 reload_array
+landing_page
