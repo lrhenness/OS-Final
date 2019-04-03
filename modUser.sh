@@ -34,7 +34,7 @@ do
 	((one+=3))
 	((two+=3))
 done
-printf '%s\n' "${users[@]}"
+#printf '%s\n' "${users[@]}"
 IFS="$oIFS"
 }
 
@@ -52,32 +52,27 @@ IFS="$oIFS"
 new_user ()
 {
 # Entering a username and checking for availability
-while :
+keep_running=true
+while [ "$keep_running" = "true" ]
 do
 	printf 'Enter a username: '
 	read a
+	i=0
 	for str in "${users[@]}"; do
-		if [ "$str" = "$a" ]; then
+		if [[ "${a,,}" = "${str,,}" ]]; then
 			echo $i
 			echo $str
-			return
+			echo 'Username already taken. Please try again.'
+			new_user
 		else
 			((i++))
 		fi
 	done
-
-#	if grep -iwq '$a' ${users[@]}
-#	then
-#		echo '------------------------------------------'
-#		echo 'Username already taken. Please try again.'
-#		echo '------------------------------------------'
-#		continue
-#	fi
-	echo 'Thank you!'
-	sleep 0.5
-	echo '-----------'
-	break
+	keep_running=false
 done
+echo 'Thank you!'
+sleep 0.5
+echo '-----------'
 
 # Default password
 b=password123
@@ -114,8 +109,10 @@ printf '.'
 sleep 0.5
 
 # Adding user to the end of users.txt
-echo '$a $b $c' >> $array
-echo '$a was added to the list of users!'
+echo "$a""|""$b""|""$c" >> $array
+echo "$a"" was added to the list of users!"
+reload_array
+landing_page
 }
 
 #-------------------------------------------------------------------
