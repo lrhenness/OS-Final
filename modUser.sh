@@ -4,10 +4,7 @@
 # new_user
 # mod_user
 # rm_user
-
-array=users.txt
-#readarray -t users < $array
-
+# reload_array
 
 #---------------------------------------------------------------
 #-----------------------reload_array----------------------------
@@ -39,40 +36,38 @@ IFS="$oIFS"
 }
 
 #---------------------------------------------------------------
-#-------------------------get_index-----------------------------
-#---------------------------------------------------------------
-#get_index ()
-#{
-#
-#}
-
-#---------------------------------------------------------------
 #-------------------------new_user------------------------------
 #---------------------------------------------------------------
 new_user ()
 {
 # Entering a username and checking for availability
-keep_running=true
-while [ "$keep_running" = "true" ]
+while :
 do
 	printf 'Enter a username: '
 	read a
 	i=0
-	for str in "${users[@]}"; do
-		if [[ "${a,,}" = "${str,,}" ]]; then
-			echo $i
-			echo $str
+	length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
+	length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
+	while [ $i -lt $length ]
+	do
+		x=$(( $i * 3 ))      		#the array index of the current user being checked
+		if [[ "${a,,}" = "${users[$x],,}" ]]; then
+			#echo $x
+			#echo "${users[$x]}"
 			echo 'Username already taken. Please try again.'
+			new_user
+		elif [ ${#a} -lt 3 ]
+		then
+			echo 'Please enter more than two characters.'
 			new_user
 		else
 			((i++))
 		fi
 	done
-	keep_running=false
+	break
 done
 echo 'Thank you!'
 sleep 0.5
-echo '-----------'
 
 # Default password
 b=password123
@@ -85,7 +80,7 @@ do
 	echo '3: Power user'
 	printf 'Enter a level (1-3): '
 	read c
-	if [ $c -lt 1 ] || [ $c -gt 3 ]
+	if [ $c != 1 ] && [ $c != 2 ] && [ $c != 3 ]
 	then
 		echo '------------------------'
 		echo 'Please enter 1, 2, or 3'
@@ -94,7 +89,6 @@ do
 	fi
 	echo 'Thank you!'
 	sleep 0.5
-	echo '-----------'
 	break
 done
 
@@ -105,14 +99,14 @@ printf '.'
 sleep 0.5
 printf '.'
 sleep 0.5
-printf '.'
+printf '. '
 sleep 0.5
 
 # Adding user to the end of users.txt
 echo "$a""|""$b""|""$c" >> $array
 echo "$a"" was added to the list of users!"
 reload_array
-landing_page
+main_menu
 }
 
 #-------------------------------------------------------------------
@@ -120,28 +114,93 @@ landing_page
 #-------------------------------------------------------------------
 mod_user ()
 {
+username=xx
 while :
 do
-	printf 'Enter the user you want to modify: '
-	read x
-	if grep -iwq '$x' $users
-	then
-		echo '1: username'
-		echo '2: password'
-		echo '3: access level'
-		printf 'Which would you like to modify about $x? '
-		read y
-	else
-		echo '------------------------------------------'
-		echo '    User not found. Please try again.'
-		echo '------------------------------------------'
-		continue
+	printf 'Enter the username of the user you would like to modify or \"q\" to quit: '
+	read a
+	if [ $a = "q" ]; then
+		main_menu
 	fi
-	echo 'Thank you!'
-	sleep 0.5
-	echo '-----------'
-	break
+	i=0
+	length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
+	length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
+	while [ $i -lt $length ]
+	do
+		x=$(( $i * 3 ))      		#the array index of the current user being checked
+		if [[ "${a,,}" = "${users[$x],,}" ]]; then
+			username="${users[$x]}"
+			index=$x
+			break
+		else
+			((i++))
+		fi
+	done
+	if [ $username != "xx" ]; then
+		break
+	else
+		echo "This user could not be found. Please try again."
+		mod_user
+	fi
 done
+echo 'Thank you!'
+sleep 0.5
+while :
+do
+	echo "1: username"
+	echo "2: password"
+	echo "3: role"
+	printf "What would you like to modify about $username?"
+	read change
+	case $change in
+		1)
+			#change username
+			while :
+			do
+				printf 'Enter a new username: '
+				read newname
+				i=0
+				length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
+				length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
+				while [ $i -lt $length ]
+				do
+					x=$(( $i * 3 ))      		#the array index of the current user being checked
+					if [[ "${newname,,}" = "${users[$x],,}" ]]; then
+						echo 'Username already taken. Please try again.'
+						continue
+					elif [ ${#newname} -lt 3 ]
+					then
+						echo 'Please enter more than two characters.'
+						continue
+					else
+						((i++))
+					fi
+				done
+				((b=x+1))
+				newpass="${users[$b]}"
+				((c=x+2))
+				newrole="${users[$c]}"
+				echo "$newname""|""$newpass""|""$newrole"
+				main_menu
+				break
+			done
+			;;
+		2)
+			#change password
+			;;
+		3)
+			#change role
+			;;
+		*)
+			echo '------------------------------------------'
+			echo '----------You did not enter 1-4-----------'
+			echo '------------------------------------------'
+			continue
+			;;
+	esac
+
+done
+exit
 reload_array
 }
 
@@ -167,9 +226,9 @@ reload_array
 
 
 #-------------------------------------------------------------------
-#---------------------------landing_page----------------------------
+#---------------------------main_menu----------------------------
 #-------------------------------------------------------------------
-landing_page ()
+main_menu ()
 {
 while :
 do
@@ -184,10 +243,10 @@ do
 			new_user
 			;;
 		2)
-			#modUser
+			mod_user
 			;;
 		3)
-			#rmUser
+			#rm_user
 			;;
 		4)
 			exit
@@ -199,10 +258,11 @@ do
 			continue
 			;;
 	esac
-	landing_page
+	main_menu
 done
 }
 
 # Starting the script
+array=users.txt
 reload_array
-landing_page
+main_menu
