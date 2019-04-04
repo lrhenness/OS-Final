@@ -1,10 +1,19 @@
 #!/bin/bash
 
 # LIST OF FUNCTIONS:
+# reload_array
 # new_user
 # mod_user
 # rm_user
-# reload_array
+
+#---------------------------------------------------------------
+#------------------------update_file----------------------------
+#---------------------------------------------------------------
+update_file ()
+{
+echo ${users[@]}
+exit
+}
 
 #---------------------------------------------------------------
 #-----------------------reload_array----------------------------
@@ -130,7 +139,7 @@ do
 		x=$(( $i * 3 ))      		#the array index of the current user being checked
 		if [[ "${a,,}" = "${users[$x],,}" ]]; then
 			username="${users[$x]}"
-			index=$x
+			index_u=$x
 			break
 		else
 			((i++))
@@ -150,7 +159,7 @@ do
 	echo "1: username"
 	echo "2: password"
 	echo "3: role"
-	printf "What would you like to modify about $username?"
+	printf "What would you like to modify about $username? "
 	read change
 	case $change in
 		1)
@@ -176,17 +185,40 @@ do
 						((i++))
 					fi
 				done
-				((b=x+1))
-				newpass="${users[$b]}"
-				((c=x+2))
-				newrole="${users[$c]}"
-				echo "$newname""|""$newpass""|""$newrole"
+				((index_p=$index_u+1))
+				newpass="${users[$index_p]}"
+				((index_r=$index_u+2))
+				newrole="${users[$index_r]}"
+				users[$index_u]="xx" #replaces the old spot in the array with xx
+				users[$index_p]="xx"
+				users[$index_r]="xx"
+				end=${#users[@]}
+				((end_u=$end+1))
+				((end_p=$end+2))
+				((end_r=$end+3))
+				users[$end_u]="$newname"
+				users[$end_p]="$newpass"
+				users[$end_r]="$newrole"
+				update_file
 				main_menu
 				break
 			done
 			;;
 		2)
 			#change password
+			while :
+			do
+				printf 'Enter a new password: '
+				read newpass
+				if [ ${#newpass} -lt 3 ]
+				then
+					echo 'Please enter more than two characters.'
+					continue
+				fi
+				#FORMAT AND PUT INTO ARRAY/USERS.TXT
+				main_menu
+				break
+			done
 			;;
 		3)
 			#change role
