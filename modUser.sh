@@ -11,7 +11,25 @@
 #---------------------------------------------------------------
 update_file ()
 {
+i=0
+length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
+length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
+> $array
 echo ${users[@]}
+while [ $i -lt $length ]
+do
+	x=$(($i*3))
+	index_u=$x
+	index_p=$(($x+1))
+	index_r=$(($x+2))
+	if [ "${users[$index_u]}" = "xx" ]; then
+		((i++))
+	else
+		((i++))
+		echo "${users[$index_u]}""|""${users[$index_p]}""|""${users[$index_r]}" >> $array
+	fi
+done
+cat $array
 exit
 }
 
@@ -215,17 +233,64 @@ do
 					echo 'Please enter more than two characters.'
 					continue
 				fi
+				echo "Thanks!"
 				#FORMAT AND PUT INTO ARRAY/USERS.TXT
+				newuser="${users[$index_u]}"
+				((index_p=$index_u+1))
+				((index_r=$index_u+2))
+				newrole="${users[$index_r]}"
+				users[$index_u]="xx" #replaces the old spot in the array with xx
+				users[$index_p]="xx"
+				users[$index_r]="xx"
+				end=${#users[@]}
+				((end_u=$end+1))
+				((end_p=$end+2))
+				((end_r=$end+3))
+				users[$end_u]="$newname"
+				users[$end_p]="$newpass"
+				users[$end_r]="$newrole"
+				update_file
 				main_menu
 				break
 			done
 			;;
 		3)
 			#change role
+			while :
+			do
+				echo '1: Intern user'
+				echo '2: General user'
+				echo '3: Power user'
+				printf "Enter a new role (1-3): "
+				read newrole
+				if [ $c != 1 ] && [ $c != 2 ] && [ $c != 3 ]
+				then
+					echo '------------------------'
+					echo 'Please enter 1, 2, or 3'
+					echo '------------------------'
+					continue
+				fi
+				((index_p=$index_u+1))
+				((index_r=$index_u+2))
+				newuser="${users[$index_u]}"
+				newpass="${users[$index_p]}"
+				users[$index_u]="xx" #replaces the old spot in the array with xx
+				users[$index_p]="xx"
+				users[$index_r]="xx"
+				end=${#users[@]}
+				((end_u=$end+1))
+				((end_p=$end+2))
+				((end_r=$end+3))
+				users[$end_u]="$newname"
+				users[$end_p]="$newpass"
+				users[$end_r]="$newrole"
+				update_file
+				echo "Thanks!"
+			done
 			;;
 		*)
 			echo '------------------------------------------'
-			echo '----------You did not enter 1-4-----------'
+			echo '----------You did not enter 1-3-----------'
 			echo '------------------------------------------'
 			continue
 			;;
@@ -239,22 +304,46 @@ reload_array
 #-------------------------------------------------------------------
 #-----------------------------rm_user-------------------------------
 #-------------------------------------------------------------------
-#rm_user()
-#{
-#while :
-#do
-#	printf 'Which user would you like to remove? '
-#	read remove
-#	if grep -iwq '$remove' $array
-#	then
-#		#REMOVE USER
-#	else
-#		echo 'This user does not exist'
-#		continue
-#	fi
-#done
-#reload_array
-#}
+rm_user ()
+{
+username="xx"
+while :
+do
+	printf 'Enter the username of the user you would like to remove or \"q\" to quit: '
+	read remove
+	if [ $remove = "q" ]; then
+		main_menu
+	fi
+	i=0
+	length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
+	length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
+	while [ $i -lt $length ]
+	do
+		x=$(( $i * 3 ))      		#the array index of the current user being checked
+		if [[ "${a,,}" = "${users[$x],,}" ]]; then
+			username="${users[$x}"
+			index_u=$x
+			break
+		else
+			((i++))
+		fi
+	done
+	if [ $username != "xx" ]; then
+		echo "MADE IT HERE"
+		break
+	else
+		echo "This user could not be found. Please try again."
+		rm_user
+	fi
+done
+echo "Thanks!"
+((index_p=$index_u+1))
+((index_r=$index_u+2))
+users[$index_u]="xx" #replaces the old spot in the array with xx
+users[$index_p]="xx"
+users[$index_r]="xx"
+reload_array
+}
 
 
 #-------------------------------------------------------------------
@@ -278,7 +367,7 @@ do
 			mod_user
 			;;
 		3)
-			#rm_user
+			rm_user
 			;;
 		4)
 			exit

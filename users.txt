@@ -1,4 +1,4 @@
-luke|supergoodpass|3
-joe|SECUREness|1
-teST|hehehehehe|3
-NEWname|PAASSSSwoooord|2
+luke|SUPERgoodPASS|3
+newNAME|simpler|2
+joe|joespASSword|2
+rick|asdasdasdasd|1
