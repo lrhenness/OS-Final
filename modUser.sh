@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # LIST OF FUNCTIONS:
+# update_file
 # reload_array
 # new_user
 # mod_user
@@ -15,7 +16,6 @@ i=0
 length=$(( ${#users[@]} + 1 ))  	#accounts for the array starting at zero
 length=$(( $length / 3 ))       	#stores the amount of users in the users.txt
 > $array
-echo ${users[@]}
 while [ $i -lt $length ]
 do
 	x=$(($i*3))
@@ -29,8 +29,7 @@ do
 		echo "${users[$index_u]}""|""${users[$index_p]}""|""${users[$index_r]}" >> $array
 	fi
 done
-cat $array
-exit
+reload_array
 }
 
 #---------------------------------------------------------------
@@ -204,19 +203,19 @@ do
 					fi
 				done
 				((index_p=$index_u+1))
-				newpass="${users[$index_p]}"
 				((index_r=$index_u+2))
+				newpass="${users[$index_p]}"
 				newrole="${users[$index_r]}"
-				users[$index_u]="xx" #replaces the old spot in the array with xx
-				users[$index_p]="xx"
-				users[$index_r]="xx"
-				end=${#users[@]}
-				((end_u=$end+1))
-				((end_p=$end+2))
-				((end_r=$end+3))
-				users[$end_u]="$newname"
-				users[$end_p]="$newpass"
-				users[$end_r]="$newrole"
+				users[$index_u]="$newname" #replaces the old spot in the array with xx
+				users[$index_p]="$newpass"
+				users[$index_r]="$newrole"
+#				end=${#users[@]}
+#				((end_u=$end+0))
+#				((end_p=$end+1))
+#				((end_r=$end+2))
+#				users[$end_u]="$newname"
+#				users[$end_p]="$newpass"
+#				users[$end_r]="$newrole"
 				update_file
 				main_menu
 				break
@@ -235,20 +234,20 @@ do
 				fi
 				echo "Thanks!"
 				#FORMAT AND PUT INTO ARRAY/USERS.TXT
-				newuser="${users[$index_u]}"
 				((index_p=$index_u+1))
 				((index_r=$index_u+2))
+				newuser="${users[$index_u]}"
 				newrole="${users[$index_r]}"
-				users[$index_u]="xx" #replaces the old spot in the array with xx
-				users[$index_p]="xx"
-				users[$index_r]="xx"
-				end=${#users[@]}
-				((end_u=$end+1))
-				((end_p=$end+2))
-				((end_r=$end+3))
-				users[$end_u]="$newname"
-				users[$end_p]="$newpass"
-				users[$end_r]="$newrole"
+				users[$index_u]="$newname" #replaces the old spot in the array with xx
+				users[$index_p]="$newpass"
+				users[$index_r]="$newrole"
+#				end=${#users[@]}
+#				((end_u=$end+0))
+#				((end_p=$end+1))
+#				((end_r=$end+2))
+#				users[$end_u]="$newname"
+#				users[$end_p]="$newpass"
+#				users[$end_r]="$newrole"
 				update_file
 				main_menu
 				break
@@ -274,16 +273,16 @@ do
 				((index_r=$index_u+2))
 				newuser="${users[$index_u]}"
 				newpass="${users[$index_p]}"
-				users[$index_u]="xx" #replaces the old spot in the array with xx
-				users[$index_p]="xx"
-				users[$index_r]="xx"
-				end=${#users[@]}
-				((end_u=$end+1))
-				((end_p=$end+2))
-				((end_r=$end+3))
-				users[$end_u]="$newname"
-				users[$end_p]="$newpass"
-				users[$end_r]="$newrole"
+				users[$index_u]="$newname" #replaces the old spot in the array with xx
+				users[$index_p]="$newpass"
+				users[$index_r]="$newrole"
+#				end=${#users[@]}
+#				((end_u=$end+0))
+#				((end_p=$end+1))
+#				((end_r=$end+2))
+#				users[$end_u]="$newname"
+#				users[$end_p]="$newpass"
+#				users[$end_r]="$newrole"
 				update_file
 				echo "Thanks!"
 			done
@@ -299,6 +298,7 @@ do
 done
 exit
 reload_array
+main_menu
 }
 
 #-------------------------------------------------------------------
@@ -320,8 +320,8 @@ do
 	while [ $i -lt $length ]
 	do
 		x=$(( $i * 3 ))      		#the array index of the current user being checked
-		if [[ "${a,,}" = "${users[$x],,}" ]]; then
-			username="${users[$x}"
+		if [[ "${remove,,}" = "${users[$x],,}" ]]; then
+			username="${users[$x]}"
 			index_u=$x
 			break
 		else
@@ -329,7 +329,6 @@ do
 		fi
 	done
 	if [ $username != "xx" ]; then
-		echo "MADE IT HERE"
 		break
 	else
 		echo "This user could not be found. Please try again."
@@ -342,7 +341,8 @@ echo "Thanks!"
 users[$index_u]="xx" #replaces the old spot in the array with xx
 users[$index_p]="xx"
 users[$index_r]="xx"
-reload_array
+update_file
+main_menu
 }
 
 
