@@ -236,7 +236,7 @@ do
 				#FORMAT AND PUT INTO ARRAY/USERS.TXT
 				((index_p=$index_u+1))
 				((index_r=$index_u+2))
-				newuser="${users[$index_u]}"
+				newname="${users[$index_u]}"
 				newrole="${users[$index_r]}"
 				users[$index_u]="$newname" #replaces the old spot in the array with xx
 				users[$index_p]="$newpass"
@@ -262,7 +262,7 @@ do
 				echo '3: Power user'
 				printf "Enter a new role (1-3): "
 				read newrole
-				if [ $c != 1 ] && [ $c != 2 ] && [ $c != 3 ]
+				if [ $newrole != 1 ] && [ $newrole != 2 ] && [ $newrole != 3 ]
 				then
 					echo '------------------------'
 					echo 'Please enter 1, 2, or 3'
@@ -271,7 +271,7 @@ do
 				fi
 				((index_p=$index_u+1))
 				((index_r=$index_u+2))
-				newuser="${users[$index_u]}"
+				newname="${users[$index_u]}"
 				newpass="${users[$index_p]}"
 				users[$index_u]="$newname" #replaces the old spot in the array with xx
 				users[$index_p]="$newpass"
@@ -283,8 +283,9 @@ do
 #				users[$end_u]="$newname"
 #				users[$end_p]="$newpass"
 #				users[$end_r]="$newrole"
-				update_file
 				echo "Thanks!"
+				update_file
+				main_menu
 			done
 			;;
 		*)
