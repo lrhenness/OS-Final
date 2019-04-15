@@ -50,9 +50,6 @@ do
 	users[$zero]=${arr[0]}
 	users[$one]=${arr[1]}
 	users[$two]=${arr[2]}
-#	echo "Username: ${arr[0]}"
-#	echo "Password: ${arr[1]}"
-#	echo "Role: ${arr[2]}"
 	((zero+=3))
 	((one+=3))
 	((two+=3))
@@ -78,8 +75,6 @@ do
 	do
 		x=$(( $i * 3 ))      		#the array index of the current user being checked
 		if [[ "${a,,}" = "${users[$x],,}" ]]; then
-			#echo $x
-			#echo "${users[$x]}"
 			echo 'Username already taken. Please try again.'
 			new_user
 		elif [ ${#a} -lt 3 ]
@@ -209,13 +204,6 @@ do
 				users[$index_u]="$newname" #replaces the old spot in the array with xx
 				users[$index_p]="$newpass"
 				users[$index_r]="$newrole"
-#				end=${#users[@]}
-#				((end_u=$end+0))
-#				((end_p=$end+1))
-#				((end_r=$end+2))
-#				users[$end_u]="$newname"
-#				users[$end_p]="$newpass"
-#				users[$end_r]="$newrole"
 				update_file
 				main_menu
 				break
@@ -241,13 +229,6 @@ do
 				users[$index_u]="$newname" #replaces the old spot in the array with xx
 				users[$index_p]="$newpass"
 				users[$index_r]="$newrole"
-#				end=${#users[@]}
-#				((end_u=$end+0))
-#				((end_p=$end+1))
-#				((end_r=$end+2))
-#				users[$end_u]="$newname"
-#				users[$end_p]="$newpass"
-#				users[$end_r]="$newrole"
 				update_file
 				main_menu
 				break
@@ -276,13 +257,6 @@ do
 				users[$index_u]="$newname" #replaces the old spot in the array with xx
 				users[$index_p]="$newpass"
 				users[$index_r]="$newrole"
-#				end=${#users[@]}
-#				((end_u=$end+0))
-#				((end_p=$end+1))
-#				((end_r=$end+2))
-#				users[$end_u]="$newname"
-#				users[$end_p]="$newpass"
-#				users[$end_r]="$newrole"
 				echo "Thanks!"
 				update_file
 				main_menu

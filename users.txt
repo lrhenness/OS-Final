@@ -1,4 +1,3 @@
 luke|simple|3
-RICK|newasspass|1
+RICK|newasspass|2
 joe|joespASSword|1
-buttS|PASSwordaf|2

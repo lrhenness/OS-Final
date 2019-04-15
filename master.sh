@@ -3,18 +3,22 @@
 
 #---------------------------
 # list of functions:
+# load_array
 # log_in
 # log_out
 # change_password
 # main_menu
 #---------------------------
 # functions of main_menu:
+# 	list working directory
 # 	move directories
-# 	list directories
 # 	create (touch) file
 # 	open (nano) file
 # 	delete (rm) file
 # 	show errors (grep)
+#	change password
+#	log out
+#	exit script
 #---------------------------
 
 
@@ -74,26 +78,46 @@ do
 		fi
 	done
 	if [ $username != "xx" ]; then
-		while :
-		do
-			printf "Please enter your password or \"q\" to quit: "
-			read pass
-			if [[ $pass = "q" ]]; then
-				exit
-			fi
-			if [[ $pass = "${users[index_p]}" ]]; then
+		if [[ ${users[index_p]} = "password123" ]]; then
+			while :
+			do
+				printf "First time login. Please enter a new password or \"q\" to quit: "
+				read pass
+				if [[ $pass = "q" ]]; then
+					exit
+				fi
+				if [ ${#pass} -lt 3 ]
+				then
+					echo 'Please enter more than two characters.'
+					continue
+				fi
 				break
-			else
-				echo "Password incorrect."
-			fi
-		done
-		break
+			done
+			break
+		else
+			while :
+			do
+				printf "Please enter your password or \"q\" to quit: "
+				read pass
+				if [[ $pass = "q" ]]; then
+					exit
+				fi
+				if [[ $pass = "${users[index_p]}" ]]; then
+					break
+				else
+					echo "Password incorrect."
+				fi
+			done
+			break
+		fi
 	else
 		echo "This user could not be found. Please try again."
 		log_in
 	fi
 done
+echo '----------------------'
 echo "You are now logged in!"
+echo '----------------------'
 user="${users[index_u]}"
 pass="${users[index_p]}"
 role="${users[index_r]}"
@@ -104,10 +128,10 @@ main_menu
 #------------------------log_out--------------------------
 #---------------------------------------------------------
 log_out () {
-	user=xx
-	pass=xx
-	role=xx
-	log_in
+echo '--------------------'
+echo "You have logged out!"
+echo '--------------------'
+log_in
 }
 
 #---------------------------------------------------------
@@ -125,8 +149,6 @@ do
 	fi
 	echo "Thanks!"
 	#FORMAT AND PUT INTO ARRAY/USERS.TXT
-	#((index_p=$index_u+1))
-	#((index_r=$index_u+2))
 	newname="${users[$index_u]}"
 	newrole="${users[$index_r]}"
 	users[$index_u]="$newname" #replaces the old spot in the array with xx
@@ -163,7 +185,7 @@ done
 main_menu () {
 while :
 do
-	echo "1: List directories"
+	echo "1: List current working directory"
 	echo "2: Move directories"
 	echo "3: Create file"
 	echo "4: Open file"
@@ -175,13 +197,17 @@ do
 	printf "What would you like to do? (Enter 1-9): "
 	read choice
 	case $choice in
-		1)
+		1) #List wd
 			echo "------------------------------------------------"
 			echo "Here is what's in the current working directory:"
-			ls $currentDir
+			if [ $currentDir = $DIR ]; then
+				echo "General/     Project/     Financial/"
+			else
+				ls $currentDir
+			fi
 			echo "------------------------------------------------"
 			;;
-		2)
+		2) #Move directories
 			while :
 			do
 				echo "1: General"
@@ -230,21 +256,96 @@ do
 				esac
 			done
 			;;
-		3)
+		3) #Create file
+			if [ $currentDir = $DIR ]; then
+				echo '---------------------------------'
+				echo "Please move to a directory first."
+				echo '---------------------------------'
+				main_menu
+			fi
+			while :
+			do
+				printf "Enter a name for the file or \"q\" to quit: "
+				read fileName
+				if [ $fileName = "q" ]; then
+					exit
+				elif [ ${#fileName} -lt 3 ]; then
+					echo "Please enter more than 2 characters"
+					continue
+				else
+					break
+				fi
+			done
+			> "$currentDir""/""$fileName"
+			echo '---------------------------------------'
+			echo "The file ""$fileName"" has been created"
+			echo '---------------------------------------'
 			;;
-		4)
+		4) #Open file
+			if [ $currentDir = $DIR ]; then
+				echo '---------------------------------'
+				echo "Please move to a directory first."
+				echo '---------------------------------'
+				main_menu
+			fi
+			while :
+			do
+				echo "Enter the name of an existing file"
+				printf "or a new file you want to open or \"q\" to quit: "
+				read file
+				if [ $file = "q" ]; then
+					exit
+				fi
+				nano "$currentDir""/""$file"
+				echo '--------------------------------------'
+				echo "Your file, ""$file"" was created."
+				echo '--------------------------------------'
+			done
 			;;
-		5)
+		5) #Delete file
+			#Comment this next if statement out if any user can delete files in the current dir
+			if [ $role != "3" ]; then
+				echo '-------------------------------------------'
+				echo "You do not have permission to delete files."
+				echo '-------------------------------------------'
+				main_menu
+			fi
+			while :
+			do
+				ls $currentDir
+				printf "Enter the name of a file you would like to delete or \"q\" to quit: "
+				read remove
+				if [ $remove = "q" ]; then
+					exit
+				fi
+				rm "$currentDir""/""$remove"
+			done
 			;;
-		6)
+		6) #Show errors in files
+			echo '--------------------------------------------------------------------------------------'
+			case $currentDir in
+				$DIR)
+					echo "Please move to a directory first"
+					;;
+				$generalDir)
+					grep -rn "ERROR:" Folders/General/
+					;;
+				$projectDir)
+					grep -rn "ERROR:" Folders/Project/
+					;;
+				$financialDir)
+					grep -rn "ERROR:" Folders/Finanacial/
+					;;
+			esac
+			echo '--------------------------------------------------------------------------------------'
 			;;
-		7)
+		7) #Change password
 			change_password
 			;;
-		8)
+		8) #Log out
 			log_out
 			;;
-		9)
+		9) #Exit
 			exit
 			;;
 		*)
@@ -259,12 +360,6 @@ currentDir="$DIR"
 generalDir="$DIR""/General"
 projectDir="$DIR""/Project"
 financialDir="$DIR""/Financial"
-echo $DIR
-echo $currentDir
-echo $generalDir
-echo $projectDir
-echo $financialDir
-sleep 500
 echo "Welcome!"
 array=users.txt
 load_array
