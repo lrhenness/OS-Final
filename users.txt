@@ -1,4 +1,4 @@
-luke|supergoodpASS|3
+luke|thisismyNEWpass|3
 RICK|newasspass|1
 joe|joespASSword|1
 buttS|PASSwordaf|2
