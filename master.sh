@@ -152,7 +152,6 @@ do
 	done
 	echo "Password changed!"
 	load_array
-	echo "DDDOOONNEE"
 	main_menu
 	break
 done
@@ -171,33 +170,64 @@ do
 	echo "5: Delete file"
 	echo "6: Show file errors"
 	echo "7: Change password"
-	echo "8: Exit"
-	printf "What would you like to do? (Enter 1-8): "
+	echo "8: Log out"
+	echo "9: Exit"
+	printf "What would you like to do? (Enter 1-9): "
 	read choice
 	case $choice in
 		1)
 			echo "------------------------------------------------"
 			echo "Here is what's in the current working directory:"
-			ls "$currentDir"
+			ls $currentDir
 			echo "------------------------------------------------"
 			;;
 		2)
 			while :
 			do
-				if [[ $currentDir = $DIR ]]; then
-					echo "1: General"
-					echo "2: Project"
-					echo "3: Financial"
-					printf "Which directory would you like to move to?"
-					read where
-					if [[ $where != 1 ]] && [[ $where != 2 ]] && [[ $where != 3 ]]; then
+				echo "1: General"
+				echo "2: Project"
+				echo "3: Financial"
+				printf "Which directory would you like to move to? (1-3) "
+				read where
+				case $where in
+					1)
+						currentDir=$generalDir
+						echo "------------------------------------------------"
+						echo "You are now in the General directory"
+						ls $currentDir
+						echo "------------------------------------------------"
+						main_menu
+						;;
+					2)
+						if [ $role != 2 ] && [ $role != 3 ]; then
+							echo "You are not allowed access to this directory."
+							main_menu
+						fi
+						currentDir=$projectDir
+						echo "------------------------------------------------"
+						echo "You are now in the Project directory"
+						ls $currentDir
+						echo "------------------------------------------------"
+						main_menu
+						;;
+					3)
+						if [ $role != 3 ]; then
+							echo "You are not allowed access to this directory."
+							main_menu
+						fi
+						currentDir=$financialDir
+						echo "------------------------------------------------"
+						echo "You are now in the Financial directory"
+						ls $currentDir
+						echo "------------------------------------------------"
+						main_menu
+						;;
+					*)
 						echo '-----------------------'
 						echo 'Please enter 1, 2, or 3'
 						echo '-----------------------'
-						continue
-					fi
-				fi
-				echo "------------------------------------------------"
+						;;
+				esac
 			done
 			;;
 		3)
@@ -212,10 +242,13 @@ do
 			change_password
 			;;
 		8)
+			log_out
+			;;
+		9)
 			exit
 			;;
 		*)
-			echo "Please enter 1-7"
+			echo "Please enter 1-9"
 			;;
 	esac
 done
@@ -223,9 +256,15 @@ done
 
 DIR="$(pwd)""/Folders"
 currentDir="$DIR"
-generalDir="DIR""/General"
+generalDir="$DIR""/General"
 projectDir="$DIR""/Project"
 financialDir="$DIR""/Financial"
+echo $DIR
+echo $currentDir
+echo $generalDir
+echo $projectDir
+echo $financialDir
+sleep 500
 echo "Welcome!"
 array=users.txt
 load_array
