@@ -1,3 +1,3 @@
 luke|simple|3
-RICK|newasspass|2
-joe|joespASSword|1
+RICK|newPASSpass|2
+joe|1%@Jgfji&dio|1
